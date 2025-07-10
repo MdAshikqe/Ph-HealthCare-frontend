@@ -1,8 +1,8 @@
-import { Button } from "@mui/material"
+import HeroSection from "@/components/UI/HomePage/HeroSection/HeroSection"
 
 const HomePage=()=>{
   return(
-    <Button>click me</Button>
+    <HeroSection></HeroSection>
     
   )
 }
