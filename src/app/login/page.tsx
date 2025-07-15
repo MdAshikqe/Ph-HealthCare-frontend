@@ -1,6 +1,7 @@
 "use client"
 import assets from "@/assets";
 import { userLogin } from "@/Service/Action/userLogin";
+import { storeUserInfo } from "@/Service/authService";
 import { Box, Button, Container, Grid2, Stack, TextField, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,7 +24,10 @@ const LoginPage=()=>{
   const onSubmit: SubmitHandler<Inputs> =async (data) =>{
     try {
         const res= await userLogin(data)
-        if(res?.success){
+        if(res?.data?.accessToken){
+            if(res?.data?.accessToken){
+                storeUserInfo(res?.data?.accessToken)
+            }
             toast(res?.message)
             router.push("/")
         }
