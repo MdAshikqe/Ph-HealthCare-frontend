@@ -1,5 +1,7 @@
 "use client"
 import assets from "@/assets";
+import PHForms from "@/components/Forms/PHForms";
+import PHInput from "@/components/Forms/PHInput";
 import { registerPatient } from "@/Service/Action/registerPatient";
 import { userLogin } from "@/Service/Action/userLogin";
 import { storeUserInfo } from "@/Service/authService";
@@ -8,35 +10,21 @@ import { Box, Button, Container, Grid2, Stack, TextField, Typography } from "@mu
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler} from "react-hook-form";
 import { toast} from "sonner";
 
-type Inputs = {
-  password:string
-patient:{
-  name: string
-  email: string
-  contactNumber:string
-  address:string
-    }
-}
 
 const RegisterPage=()=>{
     const router=useRouter();
-    const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> =async (values) => {
+  const handleRegister: SubmitHandler<FieldValues> =async (values) => {
     const data=modifyPayload(values)
     try {
         const res= await registerPatient(data)
         if(res?.success){
             const result= await userLogin({password:values.password,email:values.patient.email})
                     if(result?.data?.accessToken){
+                        toast(res?.message)
                             storeUserInfo(result?.data?.accessToken)
-
                         router.push("/")
                     }
             
@@ -74,76 +62,65 @@ const RegisterPage=()=>{
                     </Box>
                 </Stack>
                     <Box sx={{my:2}}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <PHForms onSubmit={handleRegister}>
                 <Grid2 container spacing={2} >
                     <Grid2 size={12}>
                             <Box>
-                            <TextField 
-                            id="outlined-basic" 
+                            <PHInput 
+                            name="patient.name"
                             label="Name" 
-                            variant="outlined" 
-                            size="small"
                             fullWidth={true}
-                            {...register("patient.name")}
+                             required={true}
                             />
                             </Box>
                     </Grid2>
                     <Grid2 size={6} sx={{py:1}}>
                             <Box>
-                            <TextField 
-                            id="outlined-basic" 
+                            <PHInput 
+                            name="patient.email"
+                            type="email"
                             label="Email" 
-                            variant="outlined" 
-                            size="small"
                             fullWidth={true}
-                            {...register("patient.email")}
+                             required={true}
                             />
                             </Box>
                     </Grid2>
                     <Grid2 size={6} sx={{py:1}}>
                             <Box>
-                            <TextField 
-                            id="outlined-basic" 
-                            label="Password" 
-                            variant="outlined" 
-                            size="small"
+                            <PHInput 
+                            name="password"
+                            label="Password"
+                            type="password"
                             fullWidth={true}
-                            {...register("password")}
+                             required={true}
                             />
                             </Box>
                     </Grid2>
                     <Grid2 size={6}>
                             <Box>
-                            <TextField 
-                            id="outlined-basic" 
+                            <PHInput
+                            name="patient.contactNumber" 
                             label="Contruct Number" 
-                            variant="outlined" 
-                            size="small"
+                            type="number"
                             fullWidth={true}
-                            {...register("patient.contactNumber")}
+                             required={true}
                             />
                             </Box>
                     </Grid2>
                     <Grid2 size={6}>
                             <Box>
-                            <TextField 
-                            id="outlined-basic" 
+                            <PHInput
+                            name="patient.address" 
                             label="Address" 
-                            variant="outlined" 
-                            size="small"
                             fullWidth={true}
-                            {...register("patient.address")}
+                            required={true}
                             />
                             </Box>
-                    </Grid2>
-
-                    <Grid2 size={12}>
-                            
-                           <Button type="submit" fullWidth={true} sx={{mt:5}}>Register</Button>
-
                     </Grid2>
                 </Grid2>
-                        </form>
+                    <Button type="submit" fullWidth={true} sx={{mt:5}}>Register</Button>
+            </PHForms>
+
                     </Box>
                     <Typography>
                         Do you already have a account ? <Link href="/login" >

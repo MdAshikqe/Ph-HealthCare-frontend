@@ -1,10 +1,12 @@
 "use client"
 import { Container, Typography, Button, Box } from "@mui/material";
+import { useRouter } from "next/navigation";
 
 const NotFoundPage=()=>{
+  const router=useRouter()
 
   const handleGoHome = () => {
-
+      router.push("/")
   };
     return (
        <Container

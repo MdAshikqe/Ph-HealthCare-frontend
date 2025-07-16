@@ -1,27 +1,19 @@
 "use client"
 import assets from "@/assets";
+import PHForms from "@/components/Forms/PHForms";
+import PHInput from "@/components/Forms/PHInput";
 import { userLogin } from "@/Service/Action/userLogin";
 import { storeUserInfo } from "@/Service/authService";
 import { Box, Button, Container, Grid2, Stack, TextField, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-export type Inputs = {
-  email: string
-  password: string
-}
 const LoginPage=()=>{
     const router=useRouter()
-    const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<Inputs>()
-  const onSubmit: SubmitHandler<Inputs> =async (data) =>{
+  const handleLogin =async (data:FieldValues) =>{
     try {
         const res= await userLogin(data)
         if(res?.data?.accessToken){
@@ -64,29 +56,27 @@ const LoginPage=()=>{
                     </Box>
                 </Stack>
                     <Box sx={{my:2}}>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <PHForms onSubmit={handleLogin}>
                 <Grid2 container spacing={2} >
                     <Grid2 size={6} sx={{py:1}}>
                             <Box>
-                            <TextField 
-                            id="outlined-basic" 
+                            <PHInput 
+                            name="email"
+                            type="email"
                             label="Email" 
-                            variant="outlined" 
-                            size="small"
                             fullWidth={true}
-                            {...register("email")}
+                             required={true}
                             />
                             </Box>
                     </Grid2>
                     <Grid2 size={6} sx={{py:1}}>
                             <Box>
-                            <TextField 
-                            id="outlined-basic" 
+                            <PHInput
+                            name="password"
+                            type="password" 
                             label="Password" 
-                            variant="outlined" 
-                            size="small"
                             fullWidth={true}
-                            {...register("password")}
+                             required={true}
                             />
 
 
@@ -95,7 +85,7 @@ const LoginPage=()=>{
                 </Grid2>
                 <Typography component="p" textAlign="end" mb={1} sx={{textDecoration:'underline'}}>Forgate Password?</Typography>
                  <Button type="submit" fullWidth={true} sx={{mt:2}}>Login</Button>          
-            </form>
+            </PHForms>
                     </Box>
                     <Typography>
                         Don&apos;t have have an account ? <Link href="/register" >
