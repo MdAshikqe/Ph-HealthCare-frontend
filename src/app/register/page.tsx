@@ -6,13 +6,24 @@ import { registerPatient } from "@/Service/Action/registerPatient";
 import { userLogin } from "@/Service/Action/userLogin";
 import { storeUserInfo } from "@/Service/authService";
 import { modifyPayload } from "@/utils/modifyPayload";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Container, Grid2, Stack, TextField, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler} from "react-hook-form";
 import { toast} from "sonner";
+import z from "zod";
 
+const zodValidationRegister=z.object({
+    password:z.string().min(6,"Please enter at least 6 charastics"),
+    patient:z.object({
+    name:z.string().min(1,"Please enter your name"),
+    email:z.string().email("Please enter a valid email address"),
+    contactNumber:z.string().regex(/^\d{11}$/, "Please provide a valid phone number!"),
+    address:z.string().min(1,"Pleasee enter your address")
+    })
+})
 
 const RegisterPage=()=>{
     const router=useRouter();
@@ -62,7 +73,18 @@ const RegisterPage=()=>{
                     </Box>
                 </Stack>
                     <Box sx={{my:2}}>
-            <PHForms onSubmit={handleRegister}>
+            <PHForms 
+            onSubmit={handleRegister} resolver={zodResolver(zodValidationRegister)}
+            defaultValues={{
+                password:"",
+                patient:{
+                    name:"",
+                    email:"",
+                    contactNumber:"",
+                    address:""
+                }
+            }}
+            >
                 <Grid2 container spacing={2} >
                     <Grid2 size={12}>
                             <Box>
@@ -70,7 +92,7 @@ const RegisterPage=()=>{
                             name="patient.name"
                             label="Name" 
                             fullWidth={true}
-                             required={true}
+                             
                             />
                             </Box>
                     </Grid2>
@@ -81,7 +103,7 @@ const RegisterPage=()=>{
                             type="email"
                             label="Email" 
                             fullWidth={true}
-                             required={true}
+                             
                             />
                             </Box>
                     </Grid2>
@@ -92,7 +114,7 @@ const RegisterPage=()=>{
                             label="Password"
                             type="password"
                             fullWidth={true}
-                             required={true}
+                             
                             />
                             </Box>
                     </Grid2>
@@ -103,7 +125,7 @@ const RegisterPage=()=>{
                             label="Contruct Number" 
                             type="number"
                             fullWidth={true}
-                             required={true}
+                             
                             />
                             </Box>
                     </Grid2>
@@ -113,7 +135,7 @@ const RegisterPage=()=>{
                             name="patient.address" 
                             label="Address" 
                             fullWidth={true}
-                            required={true}
+                            
                             />
                             </Box>
                     </Grid2>
